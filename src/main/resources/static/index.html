@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System | Enterprise Dashboard</title>
+    <meta name="description" content="Production-ready Library Management System powered by Spring Boot 3 and PostgreSQL. Manage books, members, inventory, and book loans with ease.">
+    <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme">
+    <!-- Background Glow Effects -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-3"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>BookVault</h1>
+                    <span>Enterprise LMS</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <button class="nav-btn active" data-tab="dashboard-tab" id="nav-dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-tab="books-tab" id="nav-books">
+                    <i class="fa-solid fa-book"></i> Books Catalog
+                </button>
+                <button class="nav-btn" data-tab="members-tab" id="nav-members">
+                    <i class="fa-solid fa-users"></i> Members
+                </button>
+                <button class="nav-btn" data-tab="loans-tab" id="nav-loans">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Borrow / Return
+                </button>
+                <button class="nav-btn" data-tab="overdue-tab" id="nav-overdue">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Overdue & Fines
+                </button>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="/swagger-ui.html" target="_blank" class="api-btn" title="Open Swagger Documentation">
+                    <i class="fa-solid fa-code"></i> <span>Swagger Docs</span>
+                </a>
+                <div class="api-status-pill" id="apiStatusBadge">
+                    <span class="status-dot"></span>
+                    <span id="apiStatusText">Connecting...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-wrapper">
+        <!-- Top Stats Overview -->
+        <section class="stats-grid">
+            <div class="stat-card" id="statCardBooks">
+                <div class="stat-icon icon-blue">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Titles</span>
+                    <h3 class="stat-value" id="statTotalBooks">0</h3>
+                    <span class="stat-sub" id="statTotalCopies">0 copies in stock</span>
+                </div>
+            </div>
+
+            <div class="stat-card" id="statCardAvailable">
+                <div class="stat-icon icon-green">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Available Copies</span>
+                    <h3 class="stat-value" id="statAvailableCopies">0</h3>
+                    <span class="stat-sub">Ready for issue</span>
+                </div>
+            </div>
+
+            <div class="stat-card" id="statCardMembers">
+                <div class="stat-icon icon-purple">
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Active Members</span>
+                    <h3 class="stat-value" id="statTotalMembers">0</h3>
+                    <span class="stat-sub">Registered readers</span>
+                </div>
+            </div>
+
+            <div class="stat-card" id="statCardLoans">
+                <div class="stat-icon icon-amber">
+                    <i class="fa-solid fa-hand-holding-hand"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Active Loans</span>
+                    <h3 class="stat-value" id="statActiveLoans">0</h3>
+                    <span class="stat-sub">Currently borrowed</span>
+                </div>
+            </div>
+
+            <div class="stat-card" id="statCardOverdue">
+                <div class="stat-icon icon-red">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Overdue Books</span>
+                    <h3 class="stat-value" id="statOverdueCount">0</h3>
+                    <span class="stat-sub" id="statOverdueFine">$0.00 estimated fine</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 1: Dashboard Overview -->
+        <section class="tab-content active" id="dashboard-tab">
+            <div class="dashboard-hero">
+                <div class="hero-text">
+                    <h2>Welcome to BookVault System ⚡</h2>
+                    <p>High-performance enterprise Library Management System running on Spring Boot 3 and PostgreSQL. Manage inventory, process loan transactions, track borrower limits, and compute late fines seamlessly.</p>
+                    <div class="hero-quick-actions">
+                        <button class="btn btn-primary" onclick="openModal('addBookModal')">
+                            <i class="fa-solid fa-plus"></i> Add New Book
+                        </button>
+                        <button class="btn btn-secondary" onclick="openModal('addMemberModal')">
+                            <i class="fa-solid fa-user-plus"></i> Register Member
+                        </button>
+                        <button class="btn btn-accent" onclick="openModal('borrowBookModal')">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i> Issue Book Loan
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-badge-card">
+                    <div class="tech-stack-pills">
+                        <span class="tech-pill"><i class="fa-brands fa-java"></i> Java 17</span>
+                        <span class="tech-pill"><i class="fa-solid fa-leaf"></i> Spring Boot 3</span>
+                        <span class="tech-pill"><i class="fa-solid fa-database"></i> PostgreSQL</span>
+                        <span class="tech-pill"><i class="fa-solid fa-shield-halved"></i> JPA/Hibernate</span>
+                    </div>
+                    <div class="api-ping-box">
+                        <span class="ping-title">Backend REST Server</span>
+                        <code class="ping-url">http://localhost:8080/api/v1</code>
+                        <div class="ping-status">
+                            <span class="pulse-dot"></span> PostgreSQL Connected & Healthy
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Split Grid -->
+            <div class="split-grid">
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-book-open"></i> Recently Added Books</h3>
+                        <button class="btn-link" onclick="switchTab('books-tab')">View All →</button>
+                    </div>
+                    <div class="compact-list" id="dashboardRecentBooks">
+                        <div class="loading-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading books...</div>
+                    </div>
+                </div>
+
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-clock-rotate-left"></i> Recent Borrow Transactions</h3>
+                        <button class="btn-link" onclick="switchTab('loans-tab')">View All →</button>
+                    </div>
+                    <div class="compact-list" id="dashboardRecentLoans">
+                        <div class="loading-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading transactions...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Books Catalog -->
+        <section class="tab-content" id="books-tab">
+            <div class="section-toolbar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="bookSearchInput" placeholder="Search by title, author, or keyword..." oninput="handleBookSearch(this.value)">
+                    <button class="clear-search" id="clearBookSearch" onclick="clearBookSearch()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn btn-primary" onclick="openModal('addBookModal')">
+                        <i class="fa-solid fa-plus"></i> Add New Book
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadBooks()">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="books-grid" id="booksGrid">
+                <!-- Dynamically loaded books cards -->
+                <div class="loading-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading books inventory...</div>
+            </div>
+
+            <div class="pagination-controls" id="booksPagination">
+                <!-- Pagination buttons generated dynamically -->
+            </div>
+        </section>
+
+        <!-- Tab 3: Members Directory -->
+        <section class="tab-content" id="members-tab">
+            <div class="section-toolbar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="memberSearchInput" placeholder="Search member by name or email..." oninput="handleMemberSearch(this.value)">
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn btn-primary" onclick="openModal('addMemberModal')">
+                        <i class="fa-solid fa-user-plus"></i> Register Member
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadMembers()">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <table class="data-table" id="membersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Member Details</th>
+                            <th>Email Address</th>
+                            <th>Phone</th>
+                            <th>Joined Date</th>
+                            <th>Status</th>
+                            <th>Active Loans</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTableBody">
+                        <tr><td colspan="8" class="text-center py-4"><i class="fa-solid fa-spinner fa-spin"></i> Loading members...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tab 4: Borrow & Returns Hub -->
+        <section class="tab-content" id="loans-tab">
+            <div class="section-toolbar">
+                <div class="filter-pills">
+                    <button class="pill active" onclick="filterLoans('ALL', this)">All Records</button>
+                    <button class="pill" onclick="filterLoans('BORROWED', this)">Active Loans</button>
+                    <button class="pill" onclick="filterLoans('RETURNED', this)">Returned</button>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn btn-accent" onclick="openModal('borrowBookModal')">
+                        <i class="fa-solid fa-plus"></i> Issue New Loan
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadLoans()">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <table class="data-table" id="loansTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Book Title</th>
+                            <th>Borrower Member</th>
+                            <th>Borrow Date</th>
+                            <th>Due Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                            <th>Fine</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loansTableBody">
+                        <tr><td colspan="9" class="text-center py-4"><i class="fa-solid fa-spinner fa-spin"></i> Loading transactions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tab 5: Overdue & Late Fines -->
+        <section class="tab-content" id="overdue-tab">
+            <div class="section-toolbar">
+                <div class="alert-banner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div>
+                        <strong>Overdue Policy Active:</strong> Late returns automatically accrue <strong>$1.00/day</strong> fine past the due date.
+                    </div>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn btn-secondary" onclick="loadOverdueLoans()">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh Overdue
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <table class="data-table" id="overdueTable">
+                    <thead>
+                        <tr>
+                            <th>Record ID</th>
+                            <th>Book Title & ISBN</th>
+                            <th>Member Name & Email</th>
+                            <th>Due Date</th>
+                            <th>Days Overdue</th>
+                            <th>Calculated Fine</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="overdueTableBody">
+                        <tr><td colspan="7" class="text-center py-4"><i class="fa-solid fa-spinner fa-spin"></i> Checking overdue records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================================================================ -->
+    <!-- MODALS -->
+    <!-- ================================================================ -->
+
+    <!-- Add / Edit Book Modal -->
+    <div class="modal-overlay" id="addBookModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="bookModalTitle"><i class="fa-solid fa-book"></i> Add New Book</h3>
+                <button class="close-modal" onclick="closeModal('addBookModal')">&times;</button>
+            </div>
+            <form id="bookForm" onsubmit="handleBookSubmit(event)">
+                <input type="hidden" id="bookId">
+                <div class="form-group">
+                    <label for="bookTitle">Book Title *</label>
+                    <input type="text" id="bookTitle" required placeholder="e.g. Clean Code: A Handbook of Agile Software Craftsmanship">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookAuthor">Author *</label>
+                        <input type="text" id="bookAuthor" required placeholder="e.g. Robert C. Martin">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookIsbn">ISBN (10 or 13 digits) *</label>
+                        <input type="text" id="bookIsbn" required placeholder="e.g. 9780132350884">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookCategory">Category / Genre</label>
+                        <input type="text" id="bookCategory" placeholder="e.g. Software Engineering">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookYear">Publication Year</label>
+                        <input type="number" id="bookYear" min="1450" max="2100" placeholder="e.g. 2008">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookCopies">Total Copies *</label>
+                        <input type="number" id="bookCopies" required min="1" max="1000" value="5">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addBookModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBookBtn">Save Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add / Edit Member Modal -->
+    <div class="modal-overlay" id="addMemberModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="memberModalTitle"><i class="fa-solid fa-user-plus"></i> Register Library Member</h3>
+                <button class="close-modal" onclick="closeModal('addMemberModal')">&times;</button>
+            </div>
+            <form id="memberForm" onsubmit="handleMemberSubmit(event)">
+                <input type="hidden" id="memberId">
+                <div class="form-group">
+                    <label for="memberName">Full Name *</label>
+                    <input type="text" id="memberName" required placeholder="e.g. Alice Johnson">
+                </div>
+                <div class="form-group">
+                    <label for="memberEmail">Email Address *</label>
+                    <input type="email" id="memberEmail" required placeholder="e.g. alice.johnson@example.com">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="memberPhone">Phone Number *</label>
+                        <input type="tel" id="memberPhone" required placeholder="e.g. +1-555-0199">
+                    </div>
+                    <div class="form-group">
+                        <label for="memberStatus">Membership Status</label>
+                        <select id="memberStatus">
+                            <option value="ACTIVE" selected>ACTIVE</option>
+                            <option value="SUSPENDED">SUSPENDED</option>
+                            <option value="INACTIVE">INACTIVE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addMemberModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveMemberBtn">Register Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Issue Book Loan Modal -->
+    <div class="modal-overlay" id="borrowBookModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> Issue Book Loan</h3>
+                <button class="close-modal" onclick="closeModal('borrowBookModal')">&times;</button>
+            </div>
+            <form id="borrowForm" onsubmit="handleBorrowSubmit(event)">
+                <div class="form-group">
+                    <label for="borrowMemberSelect">Select Member *</label>
+                    <select id="borrowMemberSelect" required>
+                        <option value="">-- Choose registered member --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="borrowBookSelect">Select Book to Issue *</label>
+                    <select id="borrowBookSelect" required>
+                        <option value="">-- Choose available book --</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="borrowDays">Loan Duration (Days)</label>
+                        <input type="number" id="borrowDays" min="1" max="90" value="14">
+                    </div>
+                    <div class="form-group">
+                        <label for="borrowRemarks">Notes / Remarks</label>
+                        <input type="text" id="borrowRemarks" placeholder="e.g. Exam preparation">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('borrowBookModal')">Cancel</button>
+                    <button type="submit" class="btn btn-accent" id="confirmBorrowBtn">Confirm Loan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Custom JavaScript Application -->
+    <script src="js/app.js"></script>
+</body>
+</html>

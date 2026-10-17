@@ -1,0 +1,37 @@
+databases:
+  - name: bookvault-db
+    plan: free
+    databaseName: library_db
+    user: bookvault
+
+services:
+  - type: web
+    name: bookvault
+    runtime: docker
+    plan: free
+    healthCheckPath: /v3/api-docs
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: DB_HOST
+        fromDatabase:
+          name: bookvault-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: bookvault-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: bookvault-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: bookvault-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: bookvault-db
+          property: password
+      - key: JAVA_TOOL_OPTIONS
+        value: "-Xmx300m"
