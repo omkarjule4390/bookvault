@@ -2,23 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Management System | Enterprise Dashboard</title>
-    <meta name="description" content="Production-ready Library Management System powered by Spring Boot 3 and PostgreSQL. Manage books, members, inventory, and book loans with ease.">
-    <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>BookVault | Library Management</title>
+    <meta name="description" content="BookVault: manage books, members, loans and overdue fines.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem("bv_theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="dark-theme">
-    <!-- Background Glow Effects -->
-    <div class="bg-glow glow-1"></div>
-    <div class="bg-glow glow-2"></div>
-    <div class="bg-glow glow-3"></div>
+<body>
 
     <!-- Navigation Header -->
     <header class="navbar">
@@ -29,11 +24,11 @@
                 </div>
                 <div class="logo-text">
                     <h1>BookVault</h1>
-                    <span>Enterprise LMS</span>
+                    <span>Library Management</span>
                 </div>
             </div>
 
-            <nav class="nav-links">
+            <nav class="nav-links" id="navLinks" aria-label="Main">
                 <button class="nav-btn active" data-tab="dashboard-tab" id="nav-dashboard">
                     <i class="fa-solid fa-chart-pie"></i> Dashboard
                 </button>
@@ -52,6 +47,8 @@
             </nav>
 
             <div class="nav-actions">
+                <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"></button>
+                <button class="icon-btn menu-toggle" id="menuToggle" type="button" aria-label="Menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
                 <a href="/swagger-ui.html" target="_blank" class="api-btn" title="Open Swagger Documentation">
                     <i class="fa-solid fa-code"></i> <span>Swagger Docs</span>
                 </a>
@@ -125,36 +122,13 @@
 
         <!-- Tab 1: Dashboard Overview -->
         <section class="tab-content active" id="dashboard-tab">
-            <div class="dashboard-hero">
-                <div class="hero-text">
-                    <h2>Welcome to BookVault System ⚡</h2>
-                    <p>High-performance enterprise Library Management System running on Spring Boot 3 and PostgreSQL. Manage inventory, process loan transactions, track borrower limits, and compute late fines seamlessly.</p>
-                    <div class="hero-quick-actions">
-                        <button class="btn btn-primary" onclick="openModal('addBookModal')">
-                            <i class="fa-solid fa-plus"></i> Add New Book
-                        </button>
-                        <button class="btn btn-secondary" onclick="openModal('addMemberModal')">
-                            <i class="fa-solid fa-user-plus"></i> Register Member
-                        </button>
-                        <button class="btn btn-accent" onclick="openModal('borrowBookModal')">
-                            <i class="fa-solid fa-arrow-right-arrow-left"></i> Issue Book Loan
-                        </button>
-                    </div>
-                </div>
-                <div class="hero-badge-card">
-                    <div class="tech-stack-pills">
-                        <span class="tech-pill"><i class="fa-brands fa-java"></i> Java 17</span>
-                        <span class="tech-pill"><i class="fa-solid fa-leaf"></i> Spring Boot 3</span>
-                        <span class="tech-pill"><i class="fa-solid fa-database"></i> PostgreSQL</span>
-                        <span class="tech-pill"><i class="fa-solid fa-shield-halved"></i> JPA/Hibernate</span>
-                    </div>
-                    <div class="api-ping-box">
-                        <span class="ping-title">Backend REST Server</span>
-                        <code class="ping-url">http://localhost:8080/api/v1</code>
-                        <div class="ping-status">
-                            <span class="pulse-dot"></span> PostgreSQL Connected & Healthy
-                        </div>
-                    </div>
+            <div class="page-head">
+                <h2>Dashboard</h2>
+                <p>Manage books, members and loans, and track overdue returns.</p>
+                <div class="hero-quick-actions">
+                    <button class="btn btn-primary" onclick="openModal('addBookModal')"><i class="fa-solid fa-plus"></i> Add Book</button>
+                    <button class="btn btn-secondary" onclick="openModal('addMemberModal')"><i class="fa-solid fa-user-plus"></i> Register Member</button>
+                    <button class="btn btn-accent" onclick="openModal('borrowBookModal')"><i class="fa-solid fa-arrow-right-arrow-left"></i> Issue Book</button>
                 </div>
             </div>
 
@@ -334,7 +308,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="bookModalTitle"><i class="fa-solid fa-book"></i> Add New Book</h3>
-                <button class="close-modal" onclick="closeModal('addBookModal')">&times;</button>
+                <button class="close-modal" aria-label="Close" onclick="closeModal('addBookModal')">&times;</button>
             </div>
             <form id="bookForm" onsubmit="handleBookSubmit(event)">
                 <input type="hidden" id="bookId">
@@ -379,7 +353,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="memberModalTitle"><i class="fa-solid fa-user-plus"></i> Register Library Member</h3>
-                <button class="close-modal" onclick="closeModal('addMemberModal')">&times;</button>
+                <button class="close-modal" aria-label="Close" onclick="closeModal('addMemberModal')">&times;</button>
             </div>
             <form id="memberForm" onsubmit="handleMemberSubmit(event)">
                 <input type="hidden" id="memberId">
@@ -418,7 +392,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> Issue Book Loan</h3>
-                <button class="close-modal" onclick="closeModal('borrowBookModal')">&times;</button>
+                <button class="close-modal" aria-label="Close" onclick="closeModal('borrowBookModal')">&times;</button>
             </div>
             <form id="borrowForm" onsubmit="handleBorrowSubmit(event)">
                 <div class="form-group">
@@ -456,5 +430,6 @@
 
     <!-- Custom JavaScript Application -->
     <script src="js/app.js"></script>
+    <script src="js/theme.js"></script>
 </body>
 </html>

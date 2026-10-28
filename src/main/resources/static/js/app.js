@@ -114,9 +114,6 @@ async function checkApiHealth() {
 
     if (window.location.protocol === 'file:') {
         isApiOnline = false;
-        badge.style.background = 'rgba(59, 130, 246, 0.15)';
-        badge.style.color = '#60A5FA';
-        badge.style.borderColor = 'rgba(59, 130, 246, 0.3)';
         badgeText.textContent = 'Live Demo Mode';
         return;
     }
@@ -125,18 +122,12 @@ async function checkApiHealth() {
         const res = await fetch(`${API_BASE}/books?page=0&size=1`, { signal: AbortSignal.timeout(2000) });
         if (res.ok) {
             isApiOnline = true;
-            badge.style.background = 'rgba(16, 185, 129, 0.1)';
-            badge.style.color = '#10B981';
-            badge.style.borderColor = 'rgba(16, 185, 129, 0.25)';
             badgeText.textContent = 'PostgreSQL Connected';
         } else {
             throw new Error();
         }
     } catch (err) {
         isApiOnline = false;
-        badge.style.background = 'rgba(59, 130, 246, 0.15)';
-        badge.style.color = '#60A5FA';
-        badge.style.borderColor = 'rgba(59, 130, 246, 0.3)';
         badgeText.textContent = 'Live Demo Mode';
     }
 }
