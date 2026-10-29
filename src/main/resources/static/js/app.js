@@ -261,8 +261,9 @@ async function loadBooks() {
         const availPct = book.totalCopies > 0 ? Math.round((book.availableCopies / book.totalCopies) * 100) : 0;
         return `
             <div class="book-card" id="book-card-${book.id}">
+                <div class="book-cover">${bvCover(book)}</div>
                 <div class="book-card-top">
-                    <span class="category-tag">${escapeHtml(book.category || 'General')}</span>
+                    <span class="category-tag cat-${bvCoverKey(book)}">${escapeHtml(book.category || 'General')}</span>
                     <span class="book-year">${book.publicationYear ? book.publicationYear : ''}</span>
                 </div>
                 <div>
@@ -337,8 +338,9 @@ function handleBookSearch(query) {
 
         grid.innerHTML = books.map(book => `
             <div class="book-card">
+                <div class="book-cover">${bvCover(book)}</div>
                 <div class="book-card-top">
-                    <span class="category-tag">${escapeHtml(book.category || 'General')}</span>
+                    <span class="category-tag cat-${bvCoverKey(book)}">${escapeHtml(book.category || 'General')}</span>
                     <span class="book-year">${book.publicationYear || ''}</span>
                 </div>
                 <h4 class="book-title">${escapeHtml(book.title)}</h4>
