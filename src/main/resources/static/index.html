@@ -122,15 +122,27 @@
 
         <!-- Tab 1: Dashboard Overview -->
         <section class="tab-content active" id="dashboard-tab">
-            <div class="page-head">
-                <h2>Dashboard</h2>
-                <p>Manage books, members and loans, and track overdue returns.</p>
-                <div class="hero-quick-actions">
-                    <button class="btn btn-primary" onclick="openModal('addBookModal')"><i class="fa-solid fa-plus"></i> Add Book</button>
-                    <button class="btn btn-secondary" onclick="openModal('addMemberModal')"><i class="fa-solid fa-user-plus"></i> Register Member</button>
-                    <button class="btn btn-accent" onclick="openModal('borrowBookModal')"><i class="fa-solid fa-arrow-right-arrow-left"></i> Issue Book</button>
+            <div class="hero">
+                <div class="hero-copy">
+                    <h2>Discover Your Next Great Book</h2>
+                    <p>Search the catalogue, issue books to members and keep track of returns, all in one place.</p>
+                    <form class="hero-search" id="heroSearchForm" role="search">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="search" id="heroSearch" placeholder="Search books, authors or genres" aria-label="Search books, authors or genres">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+                    <div class="hero-quick-actions">
+                        <button class="btn btn-accent" onclick="switchTab('books-tab')"><i class="fa-solid fa-book-open"></i> Explore Books</button>
+                        <button class="btn btn-secondary" onclick="openModal('addBookModal')"><i class="fa-solid fa-plus"></i> Add Book</button>
+                        <button class="btn btn-secondary" onclick="openModal('addMemberModal')"><i class="fa-solid fa-user-plus"></i> Register Member</button>
+                        <button class="btn btn-secondary" onclick="openModal('borrowBookModal')"><i class="fa-solid fa-arrow-right-arrow-left"></i> Issue Book</button>
+                    </div>
                 </div>
+                <svg class="hero-art" viewBox="0 0 240 200" aria-hidden="true"><rect x="20" y="40" width="34" height="150" rx="3" fill="#23395B"/><rect x="58" y="62" width="30" height="128" rx="3" fill="#F07867"/><rect x="92" y="30" width="36" height="160" rx="3" fill="#3C8D93"/><rect x="132" y="70" width="28" height="120" rx="3" fill="#E6A23C"/><rect x="164" y="48" width="34" height="142" rx="3" fill="#A99BE8" transform="rotate(8 181 190)"/><rect x="10" y="190" width="220" height="6" rx="3" fill="#77D3FC"/><rect x="28" y="60" width="18" height="4" fill="#fff" opacity=".6"/><rect x="100" y="52" width="20" height="4" fill="#fff" opacity=".6"/></svg>
             </div>
+            <h3 class="section-title">Browse by category</h3>
+            <div class="cat-row"><button type="button" class="cat-chip cat-fiction" onclick="bvSearch('fiction')"><i class="fa-solid fa-feather-pointed"></i>Fiction</button><button type="button" class="cat-chip cat-selfhelp" onclick="bvSearch('self')"><i class="fa-solid fa-seedling"></i>Self-help</button><button type="button" class="cat-chip cat-tech" onclick="bvSearch('tech')"><i class="fa-solid fa-microchip"></i>Technology</button><button type="button" class="cat-chip cat-history" onclick="bvSearch('history')"><i class="fa-solid fa-landmark"></i>History</button><button type="button" class="cat-chip cat-fantasy" onclick="bvSearch('fantasy')"><i class="fa-solid fa-dragon"></i>Fantasy</button><button type="button" class="cat-chip cat-science" onclick="bvSearch('science')"><i class="fa-solid fa-atom"></i>Science</button><button type="button" class="cat-chip cat-business" onclick="bvSearch('business')"><i class="fa-solid fa-briefcase"></i>Business</button><button type="button" class="cat-chip cat-education" onclick="bvSearch('education')"><i class="fa-solid fa-graduation-cap"></i>Education</button></div>
+
 
             <!-- Recent Activity Split Grid -->
             <div class="split-grid">
@@ -298,6 +310,7 @@
             </div>
         </section>
     </main>
+    <footer class="site-footer"><div><strong>BookVault</strong> Library Management</div><nav aria-label="Footer"><a href="#" onclick="switchTab('books-tab');return false">Books</a><a href="#" onclick="switchTab('members-tab');return false">Members</a><a href="#" onclick="switchTab('loans-tab');return false">Loans</a><a href="/swagger-ui.html" target="_blank" rel="noopener">API Docs</a></nav></footer>
 
     <!-- ================================================================ -->
     <!-- MODALS -->
@@ -429,6 +442,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Custom JavaScript Application -->
+    <script src="js/covers.js"></script>
     <script src="js/app.js"></script>
     <script src="js/theme.js"></script>
 </body>
