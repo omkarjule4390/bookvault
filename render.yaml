@@ -35,3 +35,7 @@ services:
           property: password
       - key: JAVA_TOOL_OPTIONS
         value: "-Xmx300m"
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -149,5 +150,19 @@ class MemberServiceTest {
                 .hasMessageContaining("Cannot delete member");
 
         verify(memberRepository, never()).delete(any(Member.class));
+    }
+
+    @Test
+    @DisplayName("Should remove returned history before deleting the member")
+    void deleteMember_RemovesReturnedHistoryFirst() {
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(testMember));
+        when(borrowRepository.countByMemberIdAndStatus(1L, BorrowStatus.BORROWED)).thenReturn(0L);
+        when(borrowRepository.deleteByMemberId(1L)).thenReturn(2L);
+
+        memberService.deleteMember(1L);
+
+        InOrder order = inOrder(borrowRepository, memberRepository);
+        order.verify(borrowRepository).deleteByMemberId(1L);
+        order.verify(memberRepository).delete(testMember);
     }
 }

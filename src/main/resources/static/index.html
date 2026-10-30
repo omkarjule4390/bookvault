@@ -361,6 +361,31 @@
         </div>
     </div>
 
+    <!-- Admin Login Modal (needed to delete books/members) -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-lock"></i> Administrator Login</h3>
+                <button class="close-modal" aria-label="Close" onclick="cancelAdminLogin()">&times;</button>
+            </div>
+            <form onsubmit="submitAdminLogin(event)">
+                <p style="color:var(--text-muted);margin-bottom:14px">Only an administrator can delete books or members.</p>
+                <div class="form-group">
+                    <label for="adminUser">Username</label>
+                    <input type="text" id="adminUser" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required autocomplete="current-password">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cancelAdminLogin()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Continue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Add / Edit Member Modal -->
     <div class="modal-overlay" id="addMemberModal">
         <div class="modal-content">

@@ -445,16 +445,57 @@ function editBook(book) {
     openModal('addBookModal');
 }
 
+// ==============================================================================
+// Admin authorization (required only for DELETE)
+// ==============================================================================
+function adminAuthHeader() {
+    const t = sessionStorage.getItem('bv_admin');
+    return t ? { Authorization: 'Basic ' + t } : {};
+}
+
+function requireAdmin() {
+    return new Promise(resolve => {
+        if (sessionStorage.getItem('bv_admin')) return resolve(true);
+        window._adminResolve = resolve;
+        document.getElementById('adminPassword').value = '';
+        openModal('adminLoginModal');
+        setTimeout(() => document.getElementById('adminUser').focus(), 50);
+    });
+}
+
+function submitAdminLogin(e) {
+    e.preventDefault();
+    const u = document.getElementById('adminUser').value.trim();
+    const p = document.getElementById('adminPassword').value;
+    sessionStorage.setItem('bv_admin', btoa(unescape(encodeURIComponent(u + ':' + p))));
+    closeModal('adminLoginModal');
+    if (window._adminResolve) window._adminResolve(true);
+}
+
+function cancelAdminLogin() {
+    closeModal('adminLoginModal');
+    if (window._adminResolve) window._adminResolve(false);
+}
+
+async function adminDelete(url, fallbackMsg) {
+    const res = await fetch(url, { method: 'DELETE', headers: adminAuthHeader() });
+    if (res.status === 401 || res.status === 403) {
+        sessionStorage.removeItem('bv_admin');
+        throw new Error('Admin login failed. Only an administrator can delete, check the username and password.');
+    }
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || fallbackMsg);
+    }
+}
+
 async function deleteBook(id, title) {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
 
     try {
         if (isApiOnline) {
-            const res = await fetch(`${API_BASE}/books/${id}`, { method: 'DELETE' });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.message || 'Failed to delete book');
-            }
+            if (!(await requireAdmin())) return;
+            await adminDelete(`${API_BASE}/books/${id}`, 'Failed to delete book');
         } else {
             let books = getDemoStore('books');
             books = books.filter(b => b.id != id);
@@ -619,11 +660,8 @@ async function deleteMember(id, name) {
 
     try {
         if (isApiOnline) {
-            const res = await fetch(`${API_BASE}/members/${id}`, { method: 'DELETE' });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.message || 'Failed to delete member');
-            }
+            if (!(await requireAdmin())) return;
+            await adminDelete(`${API_BASE}/members/${id}`, 'Failed to delete member');
         } else {
             let members = getDemoStore('members');
             members = members.filter(m => m.id != id);

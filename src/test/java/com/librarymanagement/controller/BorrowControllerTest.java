@@ -5,7 +5,10 @@ import com.librarymanagement.dto.BorrowRequest;
 import com.librarymanagement.dto.BorrowResponse;
 import com.librarymanagement.entity.BorrowStatus;
 import com.librarymanagement.service.BorrowService;
+import com.librarymanagement.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,6 +26,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BorrowController.class)
+@Import(SecurityConfig.class)
+@TestPropertySource(properties = {"ADMIN_USERNAME=admin", "ADMIN_PASSWORD=testpass"})
 class BorrowControllerTest {
 
     @Autowired

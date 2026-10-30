@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -170,5 +171,19 @@ class BookServiceTest {
                 .hasMessageContaining("Cannot delete book");
 
         verify(bookRepository, never()).delete(any(Book.class));
+    }
+
+    @Test
+    @DisplayName("Should remove returned history before deleting the book")
+    void deleteBook_RemovesReturnedHistoryFirst() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(testBook));
+        when(borrowRepository.countByBookIdAndStatus(1L, BorrowStatus.BORROWED)).thenReturn(0L);
+        when(borrowRepository.deleteByBookId(1L)).thenReturn(2L);
+
+        bookService.deleteBook(1L);
+
+        InOrder order = inOrder(borrowRepository, bookRepository);
+        order.verify(borrowRepository).deleteByBookId(1L);
+        order.verify(bookRepository).delete(testBook);
     }
 }

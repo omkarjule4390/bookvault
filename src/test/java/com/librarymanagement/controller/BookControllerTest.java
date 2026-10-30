@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.librarymanagement.dto.BookRequest;
 import com.librarymanagement.dto.BookResponse;
 import com.librarymanagement.service.BookService;
+import com.librarymanagement.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,10 +18,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookController.class)
+@Import(SecurityConfig.class)
+@TestPropertySource(properties = {"ADMIN_USERNAME=admin", "ADMIN_PASSWORD=testpass"})
 class BookControllerTest {
 
     @Autowired
@@ -105,7 +111,7 @@ class BookControllerTest {
     @Test
     @DisplayName("DELETE /api/v1/books/{id} - Should return 204 No Content")
     void deleteBook_Returns204() throws Exception {
-        mockMvc.perform(delete("/api/v1/books/1"))
+        mockMvc.perform(delete("/api/v1/books/1").with(httpBasic("admin", "testpass")))
                 .andExpect(status().isNoContent());
     }
 }

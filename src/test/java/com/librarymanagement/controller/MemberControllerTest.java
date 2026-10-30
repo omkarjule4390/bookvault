@@ -5,7 +5,10 @@ import com.librarymanagement.dto.MemberRequest;
 import com.librarymanagement.dto.MemberResponse;
 import com.librarymanagement.entity.MemberStatus;
 import com.librarymanagement.service.MemberService;
+import com.librarymanagement.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,10 +20,13 @@ import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberController.class)
+@Import(SecurityConfig.class)
+@TestPropertySource(properties = {"ADMIN_USERNAME=admin", "ADMIN_PASSWORD=testpass"})
 class MemberControllerTest {
 
     @Autowired
@@ -101,7 +107,7 @@ class MemberControllerTest {
     @Test
     @DisplayName("DELETE /api/v1/members/{id} - Should return 204 No Content")
     void deleteMember_Returns204() throws Exception {
-        mockMvc.perform(delete("/api/v1/members/1"))
+        mockMvc.perform(delete("/api/v1/members/1").with(httpBasic("admin", "testpass")))
                 .andExpect(status().isNoContent());
     }
 }
