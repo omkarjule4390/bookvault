@@ -107,6 +107,9 @@ public class MemberServiceImpl implements MemberService {
                     member.getName(), id, activeBorrows));
         }
 
+        // Only returned (history) records can remain at this point; they reference the member via a NOT NULL foreign key.
+        long removedHistory = borrowRepository.deleteByMemberId(id);
+        log.info("Removed {} returned borrow record(s) of member ID: {}", removedHistory, id);
         memberRepository.delete(member);
         log.info("Member with ID: {} successfully deleted", id);
     }

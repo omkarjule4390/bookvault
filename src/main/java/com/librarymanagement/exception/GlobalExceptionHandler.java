@@ -141,7 +141,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.CONFLICT.value())
                 .error(HttpStatus.CONFLICT.getReasonPhrase())
-                .message("Database constraint violation occurred (e.g. duplicate key or foreign key restriction)")
+                .message("This record is linked to other records or duplicates an existing one, so the change was not saved.")
                 .path(request.getRequestURI())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);

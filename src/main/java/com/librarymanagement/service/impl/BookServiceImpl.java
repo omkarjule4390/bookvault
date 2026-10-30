@@ -121,6 +121,10 @@ public class BookServiceImpl implements BookService {
                     book.getTitle(), id, activeBorrows));
         }
 
+        // Only returned (history) records can remain at this point. They hold a NOT NULL foreign key to the book,
+        // so they are removed in the same transaction; if anything fails, everything rolls back.
+        long removedHistory = borrowRepository.deleteByBookId(id);
+        log.info("Removed {} returned borrow record(s) of book ID: {}", removedHistory, id);
         bookRepository.delete(book);
         log.info("Book with ID: {} successfully deleted", id);
     }

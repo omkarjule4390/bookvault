@@ -30,6 +30,10 @@ public interface BorrowRepository extends JpaRepository<BorrowRecord, Long> {
 
     long countByBookIdAndStatus(Long bookId, BorrowStatus status);
 
+    long deleteByBookId(Long bookId);
+
+    long deleteByMemberId(Long memberId);
+
     @Query("SELECT b FROM BorrowRecord b WHERE b.status = 'BORROWED' AND b.dueDate < :currentDate")
     List<BorrowRecord> findOverdueBorrowRecords(@Param("currentDate") LocalDate currentDate);
 
