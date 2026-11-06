@@ -109,12 +109,8 @@ function switchTab(tabId) {
 // API Health Check
 // ==============================================================================
 async function checkApiHealth() {
-    const badge = document.getElementById('apiStatusBadge');
-    const badgeText = document.getElementById('apiStatusText');
-
     if (window.location.protocol === 'file:') {
         isApiOnline = false;
-        badgeText.textContent = 'Live Demo Mode';
         return;
     }
 
@@ -122,13 +118,11 @@ async function checkApiHealth() {
         const res = await fetch(`${API_BASE}/books?page=0&size=1`, { signal: AbortSignal.timeout(2000) });
         if (res.ok) {
             isApiOnline = true;
-            badgeText.textContent = 'PostgreSQL Connected';
         } else {
             throw new Error();
         }
     } catch (err) {
         isApiOnline = false;
-        badgeText.textContent = 'Live Demo Mode';
     }
 }
 
