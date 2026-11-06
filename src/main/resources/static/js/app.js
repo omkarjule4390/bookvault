@@ -181,6 +181,7 @@ async function loadDashboardData() {
 }
 
 function renderRecentBooks(books) {
+    if (window.bvRenderFeatured) bvRenderFeatured(books);
     const container = document.getElementById('dashboardRecentBooks');
     if (!books || books.length === 0) {
         container.innerHTML = '<div class="empty-state">No books in catalog yet. Click "+ Add New Book" above.</div>';

@@ -34,3 +34,11 @@ window.bvCover=function(b){var k=key(b),t=T[k],h=hash((b.title||'')+(b.isbn||'')
 window.bvSearch=function(q){var i=document.getElementById('bookSearchInput');i.value=q||'';switchTab('books-tab');handleBookSearch(i.value);window.scrollTo({top:0,behavior:'smooth'})};
 document.addEventListener('DOMContentLoaded',function(){var f=document.getElementById('heroSearchForm');if(f)f.addEventListener('submit',function(e){e.preventDefault();bvSearch(document.getElementById('heroSearch').value)})});
 })();
+/* Featured book cards on the dashboard (real catalogue data only) */
+window.bvRenderFeatured=function(books){
+ var sec=document.getElementById('featuredSection'),box=document.getElementById('featuredBooks');if(!sec||!box)return;
+ if(!books||!books.length){sec.hidden=true;return}
+ box.innerHTML=books.slice(0,5).map(function(b){var k=bvCoverKey(b),av=(b.availableCopies!=null&&b.totalCopies!=null)?b.availableCopies+' of '+b.totalCopies+' available':'';
+  return '<article class="pop-card"><span class="category-tag cat-'+k+'">'+esc(b.category||'General')+'</span><div class="book-cover">'+bvCover(b)+'</div><h4>'+esc(b.title)+'</h4><p class="by">by '+esc(b.author)+'</p>'+(av?'<p class="avail">'+esc(av)+'</p>':'')+'<button class="btn btn-secondary btn-sm" type="button" data-q="'+esc(b.title)+'">View Details</button></article>'}).join('');
+ box.querySelectorAll('button[data-q]').forEach(function(x){x.addEventListener('click',function(){bvSearch(x.getAttribute('data-q'))})});
+ sec.hidden=false};
