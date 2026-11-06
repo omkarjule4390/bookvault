@@ -124,7 +124,7 @@ input:focus,select:focus{border-color:var(--primary)}
 .toast-success{border-left-color:var(--teal)}.toast-error{border-left-color:var(--red)}
 .toast-body h4{font-size:14px}.toast-body p{font-size:13px;color:var(--text-muted)}
 /* responsive */
-@media(max-width:900px){
+@media(max-width:1000px){
  .menu-toggle{display:inline-flex}
  .nav-container{flex-wrap:nowrap}.logo{flex:1}
  .nav-links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;margin:0;padding:8px 12px 12px;background:var(--surface);border-bottom:1px solid var(--border)}
@@ -191,3 +191,29 @@ input:focus,select:focus{border-color:var(--primary)}
 @media(max-width:900px){.hero{grid-template-columns:1fr}.hero-art{max-width:200px;order:-1}}
 @media(max-width:640px){.hero{padding:18px}.books-grid{grid-template-columns:1fr 1fr;gap:10px}.hero-search{flex-wrap:wrap}.hero-search .btn{width:100%}}
 @media(max-width:340px){.books-grid{grid-template-columns:1fr}}
+
+/* ===== Navbar: one compact row ===== */
+.nav-container{flex-wrap:nowrap;gap:12px;padding:8px 16px}
+.logo{flex:none}
+.nav-actions{flex:none}
+@media(min-width:1001px){
+ .nav-links{flex:1;margin:0 0 0 12px;gap:4px}
+ .nav-btn{flex:1 1 0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 10px;text-align:center}
+ .nav-btn i{margin:0;width:16px;text-align:center}
+ .nav-btn.active i{color:var(--amber)}
+}
+@media(max-width:1000px){.nav-links{margin:0}}
+/* ===== Navbar: one compact row, five equal items ===== */
+.nav-container{flex-wrap:nowrap;gap:12px;padding:8px 16px;min-height:56px}
+.logo{flex:none}
+.nav-links{flex:1;margin:0 0 0 8px;gap:4px;min-width:0}
+.nav-btn{flex:1 1 0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 8px;white-space:nowrap;font-size:14px;min-width:0}
+.nav-btn i{margin:0}
+.nav-actions{flex:none;margin-left:4px}
+@media(max-width:1100px){.nav-btn{font-size:13px;gap:6px;padding:0 4px}}
+@media(max-width:1024px){
+ .menu-toggle{display:inline-flex}
+ .logo{flex:1}
+ .nav-links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;margin:0;padding:8px 12px 12px;background:var(--nav);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 16px rgba(0,0,0,.2)}
+ .nav-links.open{display:flex}
+ .nav-btn{flex:none;width:100%;justify-content:flex-start;min-height:44px;padding:0 12px;font-size:15px}}
